@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven 3.9.x' 
+        jdk 'JDK 17'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                // Use 'bat' for Windows
+                bat 'mvn clean test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                // Ensure Docker Desktop is running on this machine
+                bat 'docker build -t jothiganesh69/payment-system:latest .'
+            }
+        }
+    }
+}
